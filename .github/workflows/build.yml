@@ -9,11 +9,26 @@ jobs:
     name: SonarCloud
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@master
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      
+      - name: Check branch names
+        run: |
+          echo "GITHUB_REF: ${GITHUB_REF}"
+          BRANCH_NAME=$(echo "${GITHUB_REF}" | sed -e "s/^refs\/heads\///g")
+          echo "BRANCH_NAME: ${BRANCH_NAME}"
+          if [[ ! ${BRANCH_NAME} =~ ^dev\/.*$ ]]; then
+            echo "branch name is invalid (BRANCH_NAME: ${BRANCH_NAME})."
+            exit 1
+          fi
+          MSV_CODE=$(echo ${BRANCH_NAME} | awk -F "/" '{ print $(NF - 1) }')
+          echo "MSV_CODE: ${MSV_CODE}"
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: microservices/${MSV_CODE}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
