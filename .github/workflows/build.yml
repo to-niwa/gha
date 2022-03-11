@@ -28,7 +28,7 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
-          projectBaseDir: microservices/${{ MSV_CODE }}
+          projectBaseDir: microservices/${MSV_CODE}
           args: >
             -Dsonar.organization=to-niwa_gha
             -Dsonar.projectKey=to-niwa
