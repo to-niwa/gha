@@ -22,13 +22,16 @@ jobs:
             echo "branch name is invalid (BRANCH_NAME: ${BRANCH_NAME})."
             exit 1
           fi
-          MSV_CODE=$(echo ${BRANCH_NAME} | awk -F "/" '{ print $(NF - 1) }')
+          MSV_CODE=$(echo ${BRANCH_NAME} | awk -F "/" '{ print $NF }')
           echo "MSV_CODE: ${MSV_CODE}"
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
-          projectBaseDir: microservices/${MSV_CODE}
+          projectBaseDir: microservices/${{ MSV_CODE }}
+          args: >
+            -Dsonar.organization=to-niwa_gha
+            -Dsonar.projectKey=to-niwa
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
