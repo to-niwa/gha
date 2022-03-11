@@ -29,11 +29,8 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
-          projectBaseDir: microservices/${{ steps.check_branch_names.outputs.MSV_CODE }}
           args: >
-            -Dsonar.organization=to-niwa_gha
-            -Dsonar.projectKey=to-niwa
-            -Dsonar.sources=.
+            -Dsonar.sources=microservices/${{ steps.check_branch_names.outputs.MSV_CODE }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
