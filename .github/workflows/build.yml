@@ -13,7 +13,8 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       
-      - name: Check branch names
+      - id: check_branch_names
+        name: Check branch names
         run: |
           echo "GITHUB_REF: ${GITHUB_REF}"
           BRANCH_NAME=$(echo "${GITHUB_REF}" | sed -e "s/^refs\/heads\///g")
@@ -23,12 +24,12 @@ jobs:
             exit 1
           fi
           MSV_CODE=$(echo ${BRANCH_NAME} | awk -F "/" '{ print $NF }')
-          echo "MSV_CODE: ${MSV_CODE}"
+          echo "::set-output name=MSV_CODE::${MSV_CODE}"
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
-          projectBaseDir: microservices/test
+          projectBaseDir: microservices/${MSV_CODE}
           args: >
             -Dsonar.organization=to-niwa_gha
             -Dsonar.projectKey=to-niwa
